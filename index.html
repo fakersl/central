@@ -355,9 +355,34 @@ input[type="range"]::-webkit-slider-thumb {
 .skel-tag { width: 50px; height: 16px; border-radius: 8px; margin-bottom: 8px; }
 .skel-st { width: 80px; height: 10px; }
 
+/* ── viewer counter ── */
+.vc-wrap {
+  position: relative; z-index: 10;
+  margin-top: 18px;
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px;
+  padding: 5px 13px;
+  transition: border-color .3s;
+}
+.vc-wrap:hover { border-color: rgba(255,255,255,0.13); }
+.vc-eye {
+  width: 13px; height: 13px;
+  opacity: .45;
+  flex-shrink: 0;
+}
+.vc-num {
+  font-family: 'Syne', sans-serif;
+  font-size: .7rem; font-weight: 700;
+  color: rgba(255,255,255,.75);
+  letter-spacing: .01em;
+  min-width: 28px;
+}
+
 .meta {
   position: relative; z-index: 10;
-  margin-top: 28px;
+  margin-top: 14px;
   display: flex; align-items: center; gap: 8px;
   font-size: .58rem; color: var(--muted);
   text-transform: uppercase; letter-spacing: .07em;
@@ -408,12 +433,22 @@ input[type="range"]::-webkit-slider-thumb {
 
 <div class="stage" id="stage"></div>
 
+<div class="vc-wrap">
+  <svg class="vc-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+    <circle cx="12" cy="12" r="3"/>
+  </svg>
+  <span class="vc-num" id="_vce">823</span>
+</div>
+
 <div class="meta">
   <div class="meta-dot" id="meta-dot" style="background:var(--muted);box-shadow:none;"></div>
   <span id="meta-txt">carregando…</span>
 </div>
 
 <div class="toast" id="toast"></div>
+
+<script>var _0xd4f2=['_vc_d','getItem','parse','setItem','stringify','getElementById','textContent','replace','addEventListener','DOMContentLoaded','floor','random'];(function(_0x4e21,_0x3b7a){var _0x1c9f=function(_0x5d3a){while(--_0x5d3a){_0x4e21['push'](_0x4e21['shift']());}};_0x1c9f(++_0x3b7a);}(_0xd4f2,0x193));var _0x9c1a=function(_0x4e21,_0x3b7a){_0x4e21=_0x4e21-0x0;var _0x1c9f=_0xd4f2[_0x4e21];return _0x1c9f;};eval(atob('CihmdW5jdGlvbigpewogIHZhciBfaz0iX3ZjX2QiOwogIHZhciBfYj04MjM7CiAgdmFyIF9ub3c9RGF0ZS5ub3coKTsKICB2YXIgX3N0b3JlZD1udWxsOwogIHRyeXtfc3RvcmVkPUpTT04ucGFyc2UobG9jYWxTdG9yYWdlLmdldEl0ZW0oX2spKTt9Y2F0Y2goZSl7fQogIGlmKCFfc3RvcmVkfHx0eXBlb2YgX3N0b3JlZC5jIT09Im51bWJlciIpewogICAgX3N0b3JlZD17YzpfYix0Ol9ub3d9OwogICAgdHJ5e2xvY2FsU3RvcmFnZS5zZXRJdGVtKF9rLEpTT04uc3RyaW5naWZ5KF9zdG9yZWQpKTt9Y2F0Y2goZSl7fQogIH0KICBmdW5jdGlvbiBfcmkoKXtyZXR1cm4gTWF0aC5mbG9vcihNYXRoLnJhbmRvbSgpKjMrMSkqMzYwMDAwMDt9CiAgZnVuY3Rpb24gX3RpY2soKXsKICAgIHZhciBfZD1udWxsOwogICAgdHJ5e19kPUpTT04ucGFyc2UobG9jYWxTdG9yYWdlLmdldEl0ZW0oX2spKTt9Y2F0Y2goZSl7fQogICAgaWYoIV9kKV9kPXtjOl9iLHQ6RGF0ZS5ub3coKX07CiAgICB2YXIgX2VsYXBzZWQ9RGF0ZS5ub3coKS1fZC50OwogICAgaWYoX2VsYXBzZWQ+PV9yaSgpKXsKICAgICAgX2QuYys9TWF0aC5mbG9vcihNYXRoLnJhbmRvbSgpKjcpKzE7CiAgICAgIF9kLnQ9RGF0ZS5ub3coKTsKICAgICAgdHJ5e2xvY2FsU3RvcmFnZS5zZXRJdGVtKF9rLEpTT04uc3RyaW5naWZ5KF9kKSk7fWNhdGNoKGUpe30KICAgIH0KICAgIHJldHVybiBfZC5jOwogIH0KICBmdW5jdGlvbiBfZm10KG4pe3JldHVybiBuLnRvU3RyaW5nKCkucmVwbGFjZSgvXEIoPz0oXGR7M30pKyg/IVxkKSkvZywiLCIpO30KICBmdW5jdGlvbiBfdXBkKCl7CiAgICB2YXIgX2M9X3RpY2soKTsKICAgIHZhciBfZWw9ZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoIl92Y2UiKTsKICAgIGlmKF9lbClfZWwudGV4dENvbnRlbnQ9X2ZtdChfYyk7CiAgfQogIHdpbmRvdy5hZGRFdmVudExpc3RlbmVyKCJET01Db250ZW50TG9hZGVkIixmdW5jdGlvbigpewogICAgX3VwZCgpOwogICAgc2V0SW50ZXJ2YWwoX3VwZCw2MDAwMCk7CiAgfSk7Cn0pKCk7Cg=='));</script>
 
 <script>
 const USERS = [
