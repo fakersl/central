@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>gon · trio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #050506;
+  --card-bg: rgba(16,16,18,0.75);
+  --bd: rgba(255,255,255,0.08);
+  --bd-h: rgba(255,255,255,0.18);
+  --text: #ffffff;
+  --muted: #666;
+  --muted2: #888;
+  --red: #e03030;
+  --red-glow: rgba(224,48,48,0.18);
+  --online: #23a559;
+  --idle: #f0b232;
+  --dnd: #f23f43;
+  --offline: #80848e;
+  --card-w: 160px;
+  --card-expanded: 200px;
+  --radius: 22px;
+  --ease: cubic-bezier(.22,.61,.36,1);
+}
+
+::-webkit-scrollbar { display: none; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  width: 100vw;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 60px;
+  gap: 0;
+  cursor: default;
+  user-select: none;
+}
+
+#bg-img {
+  position: fixed; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; z-index: 0;
+  filter: brightness(.15) blur(40px) saturate(0.5);
+  transform: scale(1.15);
+  transition: opacity 1.2s var(--ease);
+}
+
+.noise {
+  position: fixed; inset: 0; pointer-events: none; z-index: 1;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.018;
+}
+
+.navbar {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 52px; z-index: 200;
+}
+.nb-blur {
+  position: absolute; inset: 0;
+  backdrop-filter: blur(20px) saturate(1.5);
+  background: rgba(5,5,6,0.8);
+}
+.nb-line {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 1px; background: rgba(255,255,255,0.04);
+}
+.nb-inner {
+  position: relative; z-index: 2;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 100%; padding: 0 22px;
+}
+.nb-left { display: flex; align-items: center; gap: 10px; }
+.nb-logo {
+  font-family: 'Syne', sans-serif; font-weight: 800;
+  font-size: .82rem; color: rgba(255,255,255,.9);
+  text-transform: lowercase; letter-spacing: -.01em;
+}
+.nb-sep { width: 1px; height: 13px; background: rgba(255,255,255,0.08); }
+.nb-sub {
+  font-size: .6rem; color: var(--muted2);
+  font-family: 'Syne', sans-serif; text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.nb-cnl {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(224,48,48,0.08);
+  border: 1px solid rgba(224,48,48,0.22);
+  border-radius: 20px; padding: 4px 10px;
+  text-decoration: none;
+  transition: all .25s var(--ease);
+}
+.nb-cnl:hover {
+  background: rgba(224,48,48,0.16);
+  border-color: rgba(224,48,48,0.4);
+  transform: translateY(-1px);
+}
+.nb-cnl img { width: 14px; height: 14px; border-radius: 50%; }
+.nb-cnl span {
+  font-family: 'Syne', sans-serif; font-size: .56rem;
+  font-weight: 700; color: rgba(255,255,255,.85); text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.audio-bar { display: flex; align-items: center; gap: 8px; }
+.track-name {
+  font-size: .57rem; color: var(--muted); text-transform: uppercase;
+  letter-spacing: .08em; max-width: 100px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.btn-play {
+  background: none; border: none; color: rgba(255,255,255,.7);
+  cursor: pointer; font-size: .75rem; padding: 0; width: 18px;
+  transition: color .2s;
+}
+.btn-play:hover { color: #fff; }
+input[type="range"] {
+  -webkit-appearance: none; width: 44px; height: 2px;
+  background: rgba(255,255,255,0.12); cursor: pointer; border-radius: 2px;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 8px; height: 8px;
+  border-radius: 50%; background: rgba(255,255,255,.8);
+}
+
+.stage {
+  position: relative; z-index: 10;
+  display: flex; justify-content: center;
+  gap: 16px; flex-wrap: wrap;
+  padding: 0 24px;
+  perspective: 1200px;
+}
+
+.card {
+  position: relative;
+  width: var(--card-w);
+  background: var(--card-bg);
+  backdrop-filter: blur(24px) saturate(1.5);
+  border: 1px solid var(--bd);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition:
+    border-color .35s var(--ease),
+    box-shadow .35s var(--ease),
+    width .4s var(--ease);
+  overflow: hidden;
+}
+
+.card:hover {
+  width: var(--card-expanded);
+  border-color: rgba(255,255,255,0.14);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.04),
+    0 20px 60px rgba(0,0,0,0.6),
+    0 0 80px rgba(0,0,0,0.3);
+}
+
+.glare {
+  position: absolute; inset: 0;
+  border-radius: var(--radius);
+  pointer-events: none; z-index: 10;
+  opacity: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.20) 0%, transparent 60%);
+  transition: opacity .3s ease;
+}
+
+.ci {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 22px 14px 18px;
+  gap: 0;
+}
+
+.aw {
+  position: relative;
+  width: 72px; height: 72px;
+  margin-bottom: 12px;
+  flex-shrink: 0;
+  transition: transform .35s var(--ease);
+}
+.card:hover .aw { transform: scale(1.06); }
+
+.av {
+  width: 100%; height: 100%;
+  border-radius: 50%; object-fit: cover;
+  border: 1.5px solid var(--bd);
+  background: #111;
+  transition: border-color .3s;
+}
+.card:hover .av { border-color: rgba(255,255,255,.18); }
+
+.sd {
+  position: absolute; bottom: 3px; right: 3px;
+  width: 13px; height: 13px;
+  border-radius: 50%;
+  border: 2px solid var(--bg);
+  background: var(--offline);
+  transition: background .4s, box-shadow .4s;
+}
+.sd.online  { background: var(--online); box-shadow: 0 0 6px rgba(35,165,89,.5); }
+.sd.idle    { background: var(--idle);   box-shadow: 0 0 6px rgba(240,178,50,.4); }
+.sd.dnd     { background: var(--dnd);    box-shadow: 0 0 6px rgba(242,63,67,.4); }
+
+.sd.online::after {
+  content: ''; position: absolute;
+  inset: -3px; border-radius: 50%;
+  border: 1.5px solid rgba(35,165,89,.35);
+  animation: pulse 2.5s ease-out infinite;
+}
+@keyframes pulse {
+  0%   { transform: scale(1); opacity: 1; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.nm {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800; font-size: 1.05rem;
+  margin-bottom: 2px; line-height: 1;
+  letter-spacing: -.02em;
+  transition: transform .3s var(--ease);
+}
+.un {
+  font-size: .68rem; color: var(--muted2);
+  font-weight: 300; margin-bottom: 10px;
+  letter-spacing: .01em;
+}
+
+.owner-tag-link { text-decoration: none; margin-bottom: 8px; }
+.owner-tag {
+  display: inline-flex; align-items: center;
+  background: var(--red-glow);
+  border: 1px solid rgba(224,48,48,.3);
+  padding: 2px 8px; border-radius: 8px;
+  font-family: 'Syne', sans-serif;
+  font-size: .5rem; font-weight: 700;
+  color: #e05050; text-transform: uppercase;
+  letter-spacing: .06em;
+  transition: background .2s, border-color .2s;
+}
+.owner-tag-link:hover .owner-tag {
+  background: rgba(224,48,48,.26);
+  border-color: rgba(224,48,48,.5);
+}
+.copyable { cursor: copy; }
+
+.toast {
+  position: fixed; bottom: 28px; left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  background: rgba(24,24,26,.92);
+  border: 1px solid rgba(255,255,255,.1);
+  backdrop-filter: blur(14px);
+  color: rgba(255,255,255,.85);
+  font-family: 'Syne', sans-serif;
+  font-size: .6rem; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase;
+  padding: 8px 18px; border-radius: 20px;
+  pointer-events: none; z-index: 999;
+  opacity: 0;
+  transition: opacity .25s var(--ease), transform .25s var(--ease);
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.compact-status { display: none; }
+
+.expand {
+  width: 100%;
+  max-height: 0; overflow: hidden;
+  opacity: 0;
+  transition:
+    max-height .4s var(--ease),
+    opacity .3s var(--ease);
+  display: flex; flex-direction: column; align-items: center;
+  gap: 6px;
+}
+.card:hover .expand {
+  max-height: 200px;
+  opacity: 1;
+}
+
+.acc-age {
+  font-size: .56rem; color: var(--muted);
+  margin-top: 6px; margin-bottom: 2px;
+  letter-spacing: .02em;
+}
+
+.activity-block {
+  width: 100%; padding: 6px 8px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px;
+  font-size: .57rem; color: rgba(255,255,255,.6);
+  line-height: 1.4; text-align: left;
+}
+.activity-block .act-label {
+  font-family: 'Syne', sans-serif;
+  font-size: .48rem; font-weight: 700;
+  color: var(--muted); text-transform: uppercase;
+  letter-spacing: .06em; margin-bottom: 2px;
+}
+.activity-block .act-name {
+  color: rgba(255,255,255,.85); font-weight: 400;
+}
+
+.social-row {
+  display: flex; flex-direction: column;
+  gap: 5px; width: 100%; margin-top: 2px;
+}
+.social-btn {
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px; width: 100%; padding: 6px 0;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px; text-decoration: none;
+  transition: background .2s, border-color .2s, transform .15s;
+}
+.social-btn:hover {
+  background: rgba(255,255,255,0.09);
+  border-color: rgba(255,255,255,0.18);
+  transform: scale(1.02);
+}
+.social-btn:active { transform: scale(0.96); }
+.social-btn img { width: 12px; height: 12px; }
+.social-btn.rbx img { filter: invert(1); }
+.social-btn span {
+  font-family: 'Syne', sans-serif; font-size: .53rem;
+  font-weight: 700; color: rgba(255,255,255,.8);
+  text-transform: uppercase; letter-spacing: .05em;
+}
+
+.skel {
+  background: linear-gradient(90deg, rgba(255,255,255,.04) 25%, rgba(255,255,255,.08) 50%, rgba(255,255,255,.04) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite;
+  border-radius: 6px;
+}
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+.skel-av { width: 72px; height: 72px; border-radius: 50%; margin-bottom: 12px; }
+.skel-nm { width: 70px; height: 16px; margin-bottom: 6px; }
+.skel-un { width: 50px; height: 10px; margin-bottom: 10px; }
+.skel-tag { width: 50px; height: 16px; border-radius: 8px; margin-bottom: 8px; }
+.skel-st { width: 80px; height: 10px; }
+
+.meta {
+  position: relative; z-index: 10;
+  margin-top: 28px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: .58rem; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .07em;
+}
+.meta-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--online); box-shadow: 0 0 6px rgba(35,165,89,.5);
+}
+
+@media (max-width: 600px) {
+  :root { --card-w: 140px; --card-expanded: 175px; }
+  .ci { padding: 18px 11px 14px; }
+  .aw { width: 62px; height: 62px; }
+  .nm { font-size: .95rem; }
+}
+</style>
+</head>
+<body>
+
+<img id="bg-img" src="https://i.pinimg.com/1200x/ed/11/6e/ed116e818eef98d3b034444eabbbd835.jpg">
+<div class="noise"></div>
+
+<audio id="bg-audio" loop preload="auto">
+  <source src="https://files.catbox.moe/j0ugcq.mp3" type="audio/mpeg">
+</audio>
+
+<nav class="navbar">
+  <div class="nb-blur"></div>
+  <div class="nb-line"></div>
+  <div class="nb-inner">
+    <div class="nb-left">
+      <span class="nb-logo">gon</span>
+      <div class="nb-sep"></div>
+      <span class="nb-sub">trio</span>
+      <div class="nb-sep"></div>
+      <a href="https://discord.gg/cnl" target="_blank" rel="noopener noreferrer" class="nb-cnl">
+        <img src="https://media.discordapp.net/attachments/1480742680345710837/1482957505058443396/lv_0_20260316012212.gif?ex=69f2d94d&is=69f187cd&hm=284114d268c2e8f6dc59ec22cab27cba6552c1b930503e7db285e76628286a37&=">
+        <span>central</span>
+      </a>
+    </div>
+    <div class="audio-bar">
+      <span class="track-name" id="track-name">goosebumps remix</span>
+      <button class="btn-play" id="pp" aria-label="play/pause">▶</button>
+      <input type="range" id="vl" min="0" max="1" step="0.01" aria-label="volume">
+    </div>
+  </div>
+</nav>
+
+<div class="stage" id="stage"></div>
+
+<div class="meta">
+  <div class="meta-dot" id="meta-dot" style="background:var(--muted);box-shadow:none;"></div>
+  <span id="meta-txt">carregando…</span>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const USERS = [
+  {
+    id: '311239342007779328',
+    name: 'Yuta',
+    tag: '7jqr',
+    roblox: 'https://www.roblox.com/pt/users/2626325202/profile',
+    spotify: 'https://open.spotify.com/user/31pqyteskb7u4q72tjggxx4wxvc4',
+    customAv: 'https://images-ext-1.discordapp.net/external/WViVwClw7mpbmq63R4yyUXJP6dFHR1TYh3a8VGCUeHg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/311239342007779328/ac55170861df53db623266ef947260dd.png?format=webp&quality=lossless'
+  },
+  {
+    id: '280370001569906690',
+    name: 'gon',
+    tag: 'tlwm',
+    roblox: 'https://www.roblox.com/pt/users/8239645037/profile',
+    spotify: 'https://open.spotify.com/user/21qevmw5dnttfohxx2yllugxi',
+    customAv: null
+  },
+  {
+    id: '1440741587545100351',
+    name: 'Akinori',
+    tag: 'vw4x',
+    roblox: 'https://www.roblox.com/pt/users/2356026474/profile',
+    spotify: 'https://open.spotify.com/user/nt3o4ehsa1p0jm4r33d5klj4n?nd=1&dlsi=575c15e987294f82',
+    customAv: null
+  }
+];
+
+const REFRESH_MS = 10_000;
+
+function getAge(id) {
+  try {
+    const t = Number((BigInt(id) >> 22n) + 1420070400000n);
+    const d = new Date(t), n = new Date();
+    if (t > n.getTime()) return 'nova';
+    let y = n.getFullYear() - d.getFullYear();
+    let m = n.getMonth() - d.getMonth();
+    if (m < 0) { y--; m += 12; }
+    return y > 0 ? `${y}a ${m}m` : `${Math.floor((n - t) / 86400000)}d`;
+  } catch { return '?'; }
+}
+
+function avatarUrl(id, hash) {
+  if (!hash) {
+    const defId = Number(BigInt(id) >> 22n) % 6;
+    return `https://cdn.discordapp.com/embed/avatars/${defId}.png`;
+  }
+  const ext = hash.startsWith('a_') ? 'gif' : 'webp';
+  return `https://cdn.discordapp.com/avatars/${id}/${hash}.${ext}?size=256`;
+}
+
+function statusLabel(status) {
+  return { online: 'online', idle: 'ausente', dnd: 'ocupado', offline: 'offline' }[status] || 'offline';
+}
+
+function getActivity(activities = []) {
+  if (!activities.length) return null;
+  const spot = activities.find(a => a.type === 2);
+  if (spot) return { label: 'ouvindo', name: spot.details || spot.name };
+  const game = activities.find(a => a.type === 0);
+  if (game) return { label: 'jogando', name: game.name };
+  const custom = activities.find(a => a.type === 4);
+  if (custom && custom.state) return { label: 'status', name: custom.state };
+  return null;
+}
+
+async function fetchLanyard(id) {
+  try {
+    const r = await fetch(`https://api.lanyard.rest/v1/users/${id}`);
+    const j = await r.json();
+    return j.success ? j.data : null;
+  } catch { return null; }
+}
+
+const cardEls = {};
+
+function renderSkeleton(el) {
+  el.innerHTML = `
+    <div class="ci">
+      <div class="skel skel-av"></div>
+      <div class="skel skel-nm"></div>
+      <div class="skel skel-un"></div>
+      <div class="skel skel-tag"></div>
+      <div class="skel skel-st"></div>
+    </div>`;
+}
+
+function buildCardHTML(user, data) {
+  const av = user.customAv || (data?.discord_user?.avatar
+    ? avatarUrl(user.id, data.discord_user.avatar)
+    : avatarUrl(user.id, null));
+
+  const status = data?.discord_status || 'offline';
+  const act = getActivity(data?.activities);
+  const age = getAge(user.id);
+
+  const actHTML = act ? `
+    <div class="activity-block">
+      <div class="act-label">${act.label}</div>
+      <div class="act-name">${act.name.slice(0, 34)}${act.name.length > 34 ? '…' : ''}</div>
+    </div>` : '';
+
+  const compactStatus = act
+    ? act.name.slice(0, 20) + (act.name.length > 20 ? '…' : '')
+    : statusLabel(status);
+
+  return `
+    <div class="glare"></div>
+    <div class="ci">
+      <div class="aw">
+        <img class="av" src="${av}" alt="${user.name}" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+        <div class="sd ${status}"></div>
+      </div>
+      <div class="nm copyable" data-copy="${user.tag}" title="copiar @${user.tag}">${user.name}</div>
+      <div class="un copyable" data-copy="${user.tag}" title="copiar @${user.tag}">@${user.tag}</div>
+      <a class="owner-tag-link" href="https://discord.gg/cnl" target="_blank" rel="noopener noreferrer">
+        <div class="owner-tag">Owner</div>
+      </a>
+      <div class="compact-status">${compactStatus}</div>
+      <div class="expand">
+        ${actHTML}
+        <div class="acc-age">conta criada há ${age}</div>
+        <div class="social-row">
+          <a class="social-btn rbx" href="${user.roblox}" target="_blank" rel="noopener noreferrer">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Roblox_player_icon_black.svg" alt="Roblox">
+            <span>Roblox</span>
+          </a>
+          <a class="social-btn" href="${user.spotify}" target="_blank" rel="noopener noreferrer">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" alt="Spotify">
+            <span>Spotify</span>
+          </a>
+        </div>
+      </div>
+    </div>`;
+}
+
+function applyTilt(el) {
+  const MAX_TILT = 18;
+  const SPD = 0.08;
+  const GLARE_INTENSITY = 0.20;
+
+  let curX = 0, curY = 0, tarX = 0, tarY = 0;
+  let glare = null;
+
+  function getGlare() {
+    if (!glare) glare = el.querySelector('.glare');
+    return glare;
+  }
+
+  function loop() {
+    curX += (tarX - curX) * SPD;
+    curY += (tarY - curY) * SPD;
+
+    el.style.transform = `perspective(900px) rotateX(${-curY * MAX_TILT}deg) rotateY(${curX * MAX_TILT}deg)`;
+
+    const g = getGlare();
+    if (g) {
+      const gx = (curX + 1) * 50;
+      const gy = (curY + 1) * 50;
+      g.style.background = `radial-gradient(circle at ${gx}% ${gy}%, rgba(255,255,255,${GLARE_INTENSITY}) 0%, rgba(255,255,255,0.04) 35%, transparent 60%)`;
+    }
+
+    requestAnimationFrame(loop);
+  }
+
+  el.addEventListener('mousemove', e => {
+    const r = el.getBoundingClientRect();
+    tarX = ((e.clientX - r.left) / r.width  - 0.5) * 2;
+    tarY = ((e.clientY - r.top)  / r.height - 0.5) * 2;
+    glare = null;
+    const g = getGlare();
+    if (g) g.style.opacity = 1;
+  });
+
+  el.addEventListener('mouseleave', () => {
+    tarX = 0; tarY = 0;
+    const g = getGlare();
+    if (g) g.style.opacity = 0;
+  });
+
+  requestAnimationFrame(loop);
+}
+
+function updateMeta(results) {
+  const online = results.filter(d => d?.discord_status === 'online').length;
+  const idle   = results.filter(d => d?.discord_status === 'idle').length;
+  const active = online + idle;
+  const dot = document.getElementById('meta-dot');
+  const txt = document.getElementById('meta-txt');
+
+  if (active > 0) {
+    dot.style.background = 'var(--online)';
+    dot.style.boxShadow = '0 0 6px rgba(35,165,89,.5)';
+    txt.textContent = `${active} de ${USERS.length} online`;
+  } else {
+    dot.style.background = 'var(--muted)';
+    dot.style.boxShadow = 'none';
+    txt.textContent = 'todos offline';
+  }
+}
+
+async function refresh() {
+  const results = await Promise.all(USERS.map(u => fetchLanyard(u.id)));
+
+  results.forEach((data, i) => {
+    const u = USERS[i];
+    const el = cardEls[u.id];
+    const newHTML = buildCardHTML(u, data);
+    if (el.dataset.lastRender !== newHTML) {
+      el.dataset.lastRender = newHTML;
+      el.innerHTML = newHTML;
+    }
+  });
+
+  updateMeta(results);
+}
+
+async function init() {
+  const stage = document.getElementById('stage');
+
+  USERS.forEach(u => {
+    const el = document.createElement('div');
+    el.className = 'card';
+    el.id = `card-${u.id}`;
+    renderSkeleton(el);
+    stage.appendChild(el);
+    cardEls[u.id] = el;
+    applyTilt(el);
+  });
+
+  await refresh();
+  setInterval(refresh, REFRESH_MS);
+}
+
+init();
+
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('.copyable');
+  if (!el) return;
+  const val = el.dataset.copy;
+  if (!val) return;
+  navigator.clipboard.writeText(val).then(() => {
+    showToast(`@${val} copiado!`);
+  }).catch(() => {
+    showToast('erro ao copiar');
+  });
+});
+
+const audio = document.getElementById('bg-audio');
+const pp = document.getElementById('pp');
+const vl = document.getElementById('vl');
+
+const savedVol = parseFloat(localStorage.getItem('site_vol') ?? '0.2');
+audio.volume = savedVol;
+vl.value = savedVol;
+
+function fadeIn(target = 0.3, duration = 1200) {
+  audio.volume = 0;
+  const step = target / (duration / 30);
+  const iv = setInterval(() => {
+    if (audio.volume + step >= target) { audio.volume = target; clearInterval(iv); }
+    else audio.volume += step;
+  }, 30);
+}
+
+function updateUI() { pp.textContent = audio.paused ? '▶' : '⏸'; }
+
+function tryAutoplay() {
+  audio.play().then(() => {
+    fadeIn(parseFloat(vl.value));
+    updateUI();
+  }).catch(() => {
+    document.body.addEventListener('click', () => {
+      audio.play().then(() => { fadeIn(parseFloat(vl.value)); updateUI(); }).catch(() => {});
+    }, { once: true });
+  });
+}
+
+pp.addEventListener('click', e => {
+  e.stopPropagation();
+  if (audio.paused) {
+    audio.play().then(() => { fadeIn(parseFloat(vl.value)); updateUI(); }).catch(() => {});
+  } else {
+    audio.pause(); updateUI();
+  }
+});
+
+vl.addEventListener('input', e => {
+  audio.volume = e.target.value;
+  localStorage.setItem('site_vol', e.target.value);
+});
+
+window.addEventListener('load', tryAutoplay);
+</script>
+</body>
+</html>
