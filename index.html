@@ -252,6 +252,33 @@ input[type="range"]::-webkit-slider-thumb {
   background: rgba(224,48,48,.26);
   border-color: rgba(224,48,48,.5);
 }
+.owner-tag.tag-white {
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(255,255,255,.25);
+  color: rgba(255,255,255,.92);
+}
+.owner-tag-link:hover .owner-tag.tag-white {
+  background: rgba(255,255,255,0.13);
+  border-color: rgba(255,255,255,.45);
+}
+.owner-tag.tag-red {
+  background: rgba(224,48,48,0.18);
+  border-color: rgba(224,48,48,.35);
+  color: #e05050;
+}
+.owner-tag-link:hover .owner-tag.tag-red {
+  background: rgba(224,48,48,.28);
+  border-color: rgba(224,48,48,.55);
+}
+.owner-tag.tag-purple {
+  background: rgba(139,92,246,0.15);
+  border-color: rgba(139,92,246,.35);
+  color: #a78bfa;
+}
+.owner-tag-link:hover .owner-tag.tag-purple {
+  background: rgba(139,92,246,.25);
+  border-color: rgba(139,92,246,.55);
+}
 .copyable { cursor: copy; }
 
 .toast {
@@ -287,7 +314,7 @@ input[type="range"]::-webkit-slider-thumb {
   gap: 6px;
 }
 .card:hover .expand {
-  max-height: 200px;
+  max-height: 260px;
   opacity: 1;
 }
 
@@ -415,7 +442,7 @@ input[type="range"]::-webkit-slider-thumb {
     <div class="nb-left">
       <span class="nb-logo">gon</span>
       <div class="nb-sep"></div>
-      <span class="nb-sub">trio</span>
+      <span class="nb-sub">the best of</span>
       <div class="nb-sep"></div>
       <a href="https://discord.gg/cnl" target="_blank" rel="noopener noreferrer" class="nb-cnl">
         <img src="https://media.discordapp.net/attachments/1480742680345710837/1482957505058443396/lv_0_20260316012212.gif?ex=69f2d94d&is=69f187cd&hm=284114d268c2e8f6dc59ec22cab27cba6552c1b930503e7db285e76628286a37&=">
@@ -452,11 +479,27 @@ input[type="range"]::-webkit-slider-thumb {
 <script>
 const USERS = [
   {
+    id: '1428962269475377202',
+    name: 'junin',
+    tag: null,
+    roblox: 'https://www.roblox.com/pt/users/3481486341/profile',
+    spotify: 'https://open.spotify.com/user/3123xvcykdwnvsf5fi3ko22p3szq',
+    anilist: null,
+    canva: null,
+    github: null,
+    customTag: null,
+    customAv: null
+  },
+  {
     id: '311239342007779328',
     name: 'Yuta',
     tag: '7jqr',
     roblox: 'https://www.roblox.com/pt/users/2626325202/profile',
     spotify: 'https://open.spotify.com/user/31pqyteskb7u4q72tjggxx4wxvc4',
+    anilist: null,
+    canva: null,
+    github: null,
+    customTag: null,
     customAv: null
   },
   {
@@ -465,6 +508,10 @@ const USERS = [
     tag: 'tlwm',
     roblox: 'https://www.roblox.com/pt/users/8239645037/profile',
     spotify: 'https://open.spotify.com/user/21qevmw5dnttfohxx2yllugxi',
+    anilist: null,
+    canva: null,
+    github: 'https://github.com/00ie',
+    customTag: { label: 'thebestdev', color: 'tag-purple' },
     customAv: null
   },
   {
@@ -472,7 +519,35 @@ const USERS = [
     name: 'Akinori',
     tag: 'vw4x',
     roblox: 'https://www.roblox.com/pt/users/2356026474/profile',
-    spotify: 'https://open.spotify.com/user/nt3o4ehsa1p0jm4r33d5klj4n?nd=1&dlsi=575c15e987294f82',
+    spotify: 'https://open.spotify.com/user/nt3o4ehsa1p0jm4r33d5klj4n',
+    anilist: null,
+    canva: null,
+    github: null,
+    customTag: null,
+    customAv: null
+  },
+  {
+    id: '243118335062048768',
+    name: 'garzo',
+    tag: null,
+    roblox: 'https://www.roblox.com/users/492975581/profile',
+    spotify: 'https://open.spotify.com/user/312ckdn6yzcaegysynuw3bzigkyi',
+    anilist: 'https://anilist.co/user/Garzo/',
+    canva: null,
+    github: null,
+    customTag: { label: 'feet lover', color: 'tag-red' },
+    customAv: null
+  },
+  {
+    id: '1467947033603211286',
+    name: 'lines',
+    tag: null,
+    roblox: 'https://www.roblox.com/users/440722860/profile',
+    spotify: 'https://open.spotify.com/user/ygpyv91afrgv21s64muk74l6g',
+    anilist: null,
+    canva: 'https://ingrataportifolio.my.canva.site/linesbtw',
+    github: null,
+    customTag: { label: 'nonchalant', color: 'tag-white' },
     customAv: null
   }
 ];
@@ -536,6 +611,42 @@ function renderSkeleton(el) {
     </div>`;
 }
 
+const ROBLOX_ICON = `<svg width="12" height="12" viewBox="0 0 512 512" fill="currentColor" style="color:rgba(255,255,255,.8)"><path d="M107.9 65.2L65.2 404.1 404.1 446.8 446.8 107.9zm175.6 204.8l-53.5-7.2 7.2-53.5 53.5 7.2z"/></svg>`;
+const SPOTIFY_ICON = `<svg width="12" height="12" viewBox="0 0 168 168" fill="none"><circle cx="84" cy="84" r="84" fill="#1DB954"/><path d="M120.3 114.3c-1.8 0-2.9-.6-4.5-1.6-13.5-8.2-30-12.5-47.9-12.5-9.9 0-20.1 1.3-29.3 3.2-1.7.4-3.9.9-5.3.9-4.1 0-6.8-3.1-6.8-6.8 0-4.3 2.5-6.6 5.9-7.3 11.4-2.5 23-4 35.6-4 20.6 0 39.6 5 55.4 14.7 2.9 1.8 4.7 3.6 4.7 7.4 0 3.9-3.1 6.9-7.8 6.9zm10.6-26.4c-2.2 0-3.8-.8-5.3-1.7-14.7-8.9-36-14.5-59.5-14.5-11.9 0-22.8 1.6-31.1 3.9-2 .6-3.2 1.1-4.9 1.1-4.9 0-8.7-3.9-8.7-8.8 0-4.9 2.7-7.9 6.6-9 11-3.1 23.4-5 38.4-5 25.5 0 49.8 6.3 68.1 17.5 3.2 1.9 5.4 4.5 5.4 8.9 0 4.9-3.9 8.6-9 8.6zm12.1-29.1c-2.1 0-3.4-.5-5.3-1.5-16.8-10-41.8-15.8-67.4-15.8-13.4 0-27 1.8-38.9 4.7-1.6.4-3.3 1-5.5 1-5.9 0-10.4-4.6-10.4-10.6 0-6 3.7-9.6 7.8-10.6 14.2-3.8 29.7-5.7 47.1-5.7 28.3 0 56.3 6.3 76.6 18.3 3.5 2.1 5.8 5 5.8 10.1 0 5.9-4.6 10.1-9.8 10.1z" fill="white"/></svg>`;
+const ANILIST_ICON = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6.361 2.943L0 21.056h4.942l1.077-3.133H11.4l1.077 3.133H24L17.639 2.943H6.361zm5.835 10.9H7.816l2.19-6.507 2.19 6.507z" fill="#02A9FF"/></svg>`;
+const CANVA_ICON = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm4.396 15.27c-.38.696-1.03 1.17-1.792 1.17-.47 0-.87-.13-1.21-.35l-2.854-1.95v.02c0 1.32-1.04 2.39-2.327 2.39-1.285 0-2.327-1.07-2.327-2.39V9.84c0-1.32 1.042-2.39 2.327-2.39.9 0 1.683.52 2.073 1.28l2.54 1.74.01-.01c.39-.67 1.09-1.12 1.9-1.12 1.226 0 2.22.99 2.22 2.22 0 .39-.1.76-.28 1.08l.01.01-.29.62z" fill="#7D2AE8"/></svg>`;
+const GITHUB_ICON = `<svg width="12" height="12" viewBox="0 0 24 24" fill="rgba(255,255,255,.8)"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>`;
+
+function buildSocials(user) {
+  let html = '';
+  if (user.roblox) {
+    html += `<a class="social-btn rbx" href="${user.roblox}" target="_blank" rel="noopener noreferrer">
+      ${ROBLOX_ICON}<span>Roblox</span>
+    </a>`;
+  }
+  if (user.spotify) {
+    html += `<a class="social-btn" href="${user.spotify}" target="_blank" rel="noopener noreferrer">
+      ${SPOTIFY_ICON}<span>Spotify</span>
+    </a>`;
+  }
+  if (user.anilist) {
+    html += `<a class="social-btn" href="${user.anilist}" target="_blank" rel="noopener noreferrer">
+      ${ANILIST_ICON}<span>AniList</span>
+    </a>`;
+  }
+  if (user.canva) {
+    html += `<a class="social-btn" href="${user.canva}" target="_blank" rel="noopener noreferrer">
+      ${CANVA_ICON}<span>Portfólio</span>
+    </a>`;
+  }
+  if (user.github) {
+    html += `<a class="social-btn" href="${user.github}" target="_blank" rel="noopener noreferrer">
+      ${GITHUB_ICON}<span>GitHub</span>
+    </a>`;
+  }
+  return html;
+}
+
 function buildCardHTML(user, data) {
   const av = user.customAv || (data?.discord_user?.avatar
     ? avatarUrl(user.id, data.discord_user.avatar)
@@ -544,6 +655,8 @@ function buildCardHTML(user, data) {
   const status = data?.discord_status || 'offline';
   const act = getActivity(data?.activities);
   const age = getAge(user.id);
+
+  const discordTag = user.tag || (data?.discord_user?.username ? data.discord_user.username : null);
 
   const actHTML = act ? `
     <div class="activity-block">
@@ -555,6 +668,12 @@ function buildCardHTML(user, data) {
     ? act.name.slice(0, 20) + (act.name.length > 20 ? '…' : '')
     : statusLabel(status);
 
+  const tagDisplay = discordTag ? `<div class="un copyable" data-copy="${discordTag}" title="copiar @${discordTag}">@${discordTag}</div>` : `<div class="un" style="opacity:.4">—</div>`;
+  const nmCopy = discordTag ? `class="nm copyable" data-copy="${discordTag}" title="copiar @${discordTag}"` : `class="nm"`;
+
+  const tagLabel = user.customTag ? user.customTag.label : 'Owner';
+  const tagColor = user.customTag ? user.customTag.color : 'tag-red';
+
   return `
     <div class="glare"></div>
     <div class="ci">
@@ -562,24 +681,17 @@ function buildCardHTML(user, data) {
         <img class="av" src="${av}" alt="${user.name}" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
         <div class="sd ${status}"></div>
       </div>
-      <div class="nm copyable" data-copy="${user.tag}" title="copiar @${user.tag}">${user.name}</div>
-      <div class="un copyable" data-copy="${user.tag}" title="copiar @${user.tag}">@${user.tag}</div>
+      <div ${nmCopy}>${user.name}</div>
+      ${tagDisplay}
       <a class="owner-tag-link" href="https://discord.gg/cnl" target="_blank" rel="noopener noreferrer">
-        <div class="owner-tag">Owner</div>
+        <div class="owner-tag ${tagColor}">${tagLabel}</div>
       </a>
       <div class="compact-status">${compactStatus}</div>
       <div class="expand">
         ${actHTML}
         <div class="acc-age">conta criada há ${age}</div>
         <div class="social-row">
-          <a class="social-btn rbx" href="${user.roblox}" target="_blank" rel="noopener noreferrer">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Roblox_player_icon_black.svg" alt="Roblox">
-            <span>Roblox</span>
-          </a>
-          <a class="social-btn" href="${user.spotify}" target="_blank" rel="noopener noreferrer">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" alt="Spotify">
-            <span>Spotify</span>
-          </a>
+          ${buildSocials(user)}
         </div>
       </div>
     </div>`;
@@ -601,16 +713,13 @@ function applyTilt(el) {
   function loop() {
     curX += (tarX - curX) * SPD;
     curY += (tarY - curY) * SPD;
-
     el.style.transform = `perspective(900px) rotateX(${-curY * MAX_TILT}deg) rotateY(${curX * MAX_TILT}deg)`;
-
     const g = getGlare();
     if (g) {
       const gx = (curX + 1) * 50;
       const gy = (curY + 1) * 50;
       g.style.background = `radial-gradient(circle at ${gx}% ${gy}%, rgba(255,255,255,${GLARE_INTENSITY}) 0%, rgba(255,255,255,0.04) 35%, transparent 60%)`;
     }
-
     requestAnimationFrame(loop);
   }
 
@@ -735,7 +844,7 @@ function fadeIn(target, duration = 1000) {
 
 function tryPlay() {
   if (_userPaused) return;
-  audio.load(); 
+  audio.load();
   const vol = parseFloat(vl.value) || 0.2;
   audio.play().then(() => {
     fadeIn(vol);
@@ -751,7 +860,7 @@ function tryPlay() {
 
 audio.addEventListener('stalled', () => { if (!_userPaused) setTimeout(tryPlay, 1500); });
 audio.addEventListener('error',   () => { if (!_userPaused) setTimeout(tryPlay, 2000); });
-audio.addEventListener('ended',   () => { if (!_userPaused) tryPlay(); }); // loop fallback
+audio.addEventListener('ended',   () => { if (!_userPaused) tryPlay(); });
 
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden && !_userPaused && audio.paused) tryPlay();
