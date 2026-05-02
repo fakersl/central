@@ -25,6 +25,8 @@
   --card-expanded: 200px;
   --radius: 22px;
   --ease: cubic-bezier(.22,.61,.36,1);
+  --rosecream: #f2c4b0;
+  --rosecream-glow: rgba(242,196,176,0.15);
 }
 
 ::-webkit-scrollbar { display: none; }
@@ -279,6 +281,15 @@ input[type="range"]::-webkit-slider-thumb {
   background: rgba(139,92,246,.25);
   border-color: rgba(139,92,246,.55);
 }
+.owner-tag.tag-rosecream {
+  background: rgba(242,196,176,0.12);
+  border-color: rgba(242,196,176,.35);
+  color: #f2c4b0;
+}
+.owner-tag-link:hover .owner-tag.tag-rosecream {
+  background: rgba(242,196,176,.22);
+  border-color: rgba(242,196,176,.55);
+}
 .copyable { cursor: copy; }
 
 .toast {
@@ -487,6 +498,8 @@ const USERS = [
     anilist: null,
     canva: null,
     github: null,
+    instagram: null,
+    gunslol: null,
     customTag: null,
     customAv: null
   },
@@ -499,6 +512,8 @@ const USERS = [
     anilist: null,
     canva: null,
     github: null,
+    instagram: null,
+    gunslol: null,
     customTag: null,
     customAv: null
   },
@@ -511,6 +526,8 @@ const USERS = [
     anilist: null,
     canva: null,
     github: 'https://github.com/00ie',
+    instagram: null,
+    gunslol: null,
     customTag: { label: 'thebestdev', color: 'tag-purple' },
     customAv: null
   },
@@ -523,6 +540,8 @@ const USERS = [
     anilist: null,
     canva: null,
     github: null,
+    instagram: null,
+    gunslol: null,
     customTag: null,
     customAv: null
   },
@@ -535,6 +554,8 @@ const USERS = [
     anilist: 'https://anilist.co/user/Garzo/',
     canva: null,
     github: null,
+    instagram: null,
+    gunslol: null,
     customTag: { label: 'feet lover', color: 'tag-red' },
     customAv: null
   },
@@ -547,7 +568,37 @@ const USERS = [
     anilist: null,
     canva: 'https://ingrataportifolio.my.canva.site/linesbtw',
     github: null,
+    instagram: null,
+    gunslol: null,
     customTag: { label: 'nonchalant', color: 'tag-white' },
+    customAv: null
+  },
+  {
+    id: '389909049874972683',
+    name: 'alex',
+    tag: null,
+    roblox: 'https://www.roblox.com/pt/users/669380700/profile',
+    spotify: null,
+    anilist: null,
+    canva: null,
+    github: null,
+    instagram: 'https://www.instagram.com/aleexmelu_',
+    gunslol: null,
+    customTag: { label: 'filhinho', color: 'tag-rosecream' },
+    customAv: null
+  },
+  {
+    id: '1393804742781829313',
+    name: 'nisp',
+    tag: null,
+    roblox: 'https://www.roblox.com/pt/users/819800133/profile',
+    spotify: null,
+    anilist: null,
+    canva: null,
+    github: null,
+    instagram: null,
+    gunslol: 'https://guns.lol/nisp',
+    customTag: { label: 'owner', color: 'tag-rosecream' },
     customAv: null
   }
 ];
@@ -616,6 +667,8 @@ const SPOTIFY_ICON = `<svg width="12" height="12" viewBox="0 0 168 168" fill="no
 const ANILIST_ICON = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6.361 2.943L0 21.056h4.942l1.077-3.133H11.4l1.077 3.133H24L17.639 2.943H6.361zm5.835 10.9H7.816l2.19-6.507 2.19 6.507z" fill="#02A9FF"/></svg>`;
 const CANVA_ICON = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm4.396 15.27c-.38.696-1.03 1.17-1.792 1.17-.47 0-.87-.13-1.21-.35l-2.854-1.95v.02c0 1.32-1.04 2.39-2.327 2.39-1.285 0-2.327-1.07-2.327-2.39V9.84c0-1.32 1.042-2.39 2.327-2.39.9 0 1.683.52 2.073 1.28l2.54 1.74.01-.01c.39-.67 1.09-1.12 1.9-1.12 1.226 0 2.22.99 2.22 2.22 0 .39-.1.76-.28 1.08l.01.01-.29.62z" fill="#7D2AE8"/></svg>`;
 const GITHUB_ICON = `<svg width="12" height="12" viewBox="0 0 24 24" fill="rgba(255,255,255,.8)"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>`;
+const INSTAGRAM_ICON = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>`;
+const GUNSLOL_ICON = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 6l9-3 9 3M3 18l9 3 9-3"/></svg>`;
 
 function buildSocials(user) {
   let html = '';
@@ -642,6 +695,16 @@ function buildSocials(user) {
   if (user.github) {
     html += `<a class="social-btn" href="${user.github}" target="_blank" rel="noopener noreferrer">
       ${GITHUB_ICON}<span>GitHub</span>
+    </a>`;
+  }
+  if (user.instagram) {
+    html += `<a class="social-btn" href="${user.instagram}" target="_blank" rel="noopener noreferrer">
+      ${INSTAGRAM_ICON}<span>Instagram</span>
+    </a>`;
+  }
+  if (user.gunslol) {
+    html += `<a class="social-btn" href="${user.gunslol}" target="_blank" rel="noopener noreferrer">
+      ${GUNSLOL_ICON}<span>guns.lol</span>
     </a>`;
   }
   return html;
