@@ -137,7 +137,7 @@ input[type="range"]::-webkit-slider-thumb {
 
 .stage {
   position: relative; z-index: 10;
-  display: flex; justify-content: center;
+  display: flex; justify-content: center; align-items: flex-start;
   gap: 16px; flex-wrap: wrap;
   padding: 0 24px;
   perspective: 1200px;
@@ -167,6 +167,18 @@ input[type="range"]::-webkit-slider-thumb {
     0 0 0 1px rgba(255,255,255,.04),
     0 20px 60px rgba(0,0,0,0.6),
     0 0 80px rgba(0,0,0,0.3);
+}
+
+.card.card-center {
+  border-color: rgba(139,92,246,0.25);
+  box-shadow: 0 0 30px rgba(139,92,246,0.08);
+}
+.card.card-center:hover {
+  border-color: rgba(139,92,246,0.4);
+  box-shadow:
+    0 0 0 1px rgba(139,92,246,.08),
+    0 20px 60px rgba(0,0,0,0.6),
+    0 0 80px rgba(139,92,246,0.12);
 }
 
 .glare {
@@ -443,7 +455,7 @@ input[type="range"]::-webkit-slider-thumb {
 <div class="noise"></div>
 
 <audio id="bg-audio" loop preload="auto">
-  <source src="https://litter.catbox.moe/fh9yx5.mp3" type="audio/mpeg">
+  <source src="https://litter.catbox.moe/wiy27v.mp3" type="audio/mpeg">
 </audio>
 
 <nav class="navbar">
@@ -490,20 +502,6 @@ input[type="range"]::-webkit-slider-thumb {
 <script>
 const USERS = [
   {
-    id: '1428962269475377202',
-    name: 'junin',
-    tag: null,
-    roblox: 'https://www.roblox.com/pt/users/3481486341/profile',
-    spotify: 'https://open.spotify.com/user/3123xvcykdwnvsf5fi3ko22p3szq',
-    anilist: null,
-    canva: null,
-    github: null,
-    instagram: null,
-    gunslol: null,
-    customTag: { label: 'filho da gang', color: 'tag-white' },
-    customAv: null
-  },
-  {
     id: '311239342007779328',
     name: 'Yuta',
     tag: '7jqr',
@@ -514,8 +512,9 @@ const USERS = [
     github: null,
     instagram: null,
     gunslol: null,
-    customTag: null,
-    customAv: null
+    customTag: { label: 'owner', color: 'tag-red' },
+    customAv: null,
+    center: false
   },
   {
     id: '280370001569906690',
@@ -529,7 +528,8 @@ const USERS = [
     instagram: null,
     gunslol: null,
     customTag: { label: 'thebestdev', color: 'tag-purple' },
-    customAv: null
+    customAv: null,
+    center: true
   },
   {
     id: '1440741587545100351',
@@ -542,64 +542,9 @@ const USERS = [
     github: null,
     instagram: null,
     gunslol: null,
-    customTag: null,
-    customAv: null
-  },
-  {
-    id: '243118335062048768',
-    name: 'garzo',
-    tag: null,
-    roblox: 'https://www.roblox.com/users/492975581/profile',
-    spotify: 'https://open.spotify.com/user/312ckdn6yzcaegysynuw3bzigkyi',
-    anilist: 'https://anilist.co/user/Garzo/',
-    canva: null,
-    github: null,
-    instagram: null,
-    gunslol: null,
-    customTag: { label: 'feet lover', color: 'tag-red' },
-    customAv: null
-  },
-  {
-    id: '1467947033603211286',
-    name: 'lines',
-    tag: null,
-    roblox: 'https://www.roblox.com/users/440722860/profile',
-    spotify: 'https://open.spotify.com/user/ygpyv91afrgv21s64muk74l6g',
-    anilist: null,
-    canva: 'https://ingrataportifolio.my.canva.site/linesbtw',
-    github: null,
-    instagram: null,
-    gunslol: null,
-    customTag: { label: 'nonchalant', color: 'tag-white' },
-    customAv: null
-  },
-  {
-    id: '389909049874972683',
-    name: 'alex',
-    tag: null,
-    roblox: 'https://www.roblox.com/pt/users/669380700/profile',
-    spotify: null,
-    anilist: null,
-    canva: null,
-    github: null,
-    instagram: 'https://www.instagram.com/aleexmelu_',
-    gunslol: null,
-    customTag: { label: 'filhinho', color: 'tag-rosecream' },
-    customAv: null
-  },
-  {
-    id: '1393804742781829313',
-    name: 'nisp',
-    tag: null,
-    roblox: 'https://www.roblox.com/pt/users/819800133/profile',
-    spotify: null,
-    anilist: null,
-    canva: null,
-    github: null,
-    instagram: null,
-    gunslol: 'https://guns.lol/nisp',
-    customTag: { label: 'owner', color: 'tag-rosecream' },
-    customAv: null
+    customTag: { label: 'owner', color: 'tag-red' },
+    customAv: null,
+    center: false
   }
 ];
 
@@ -664,11 +609,7 @@ function renderSkeleton(el) {
 
 const ROBLOX_ICON = `<svg width="12" height="12" viewBox="0 0 512 512" fill="currentColor" style="color:rgba(255,255,255,.8)"><path d="M107.9 65.2L65.2 404.1 404.1 446.8 446.8 107.9zm175.6 204.8l-53.5-7.2 7.2-53.5 53.5 7.2z"/></svg>`;
 const SPOTIFY_ICON = `<svg width="12" height="12" viewBox="0 0 168 168" fill="none"><circle cx="84" cy="84" r="84" fill="#1DB954"/><path d="M120.3 114.3c-1.8 0-2.9-.6-4.5-1.6-13.5-8.2-30-12.5-47.9-12.5-9.9 0-20.1 1.3-29.3 3.2-1.7.4-3.9.9-5.3.9-4.1 0-6.8-3.1-6.8-6.8 0-4.3 2.5-6.6 5.9-7.3 11.4-2.5 23-4 35.6-4 20.6 0 39.6 5 55.4 14.7 2.9 1.8 4.7 3.6 4.7 7.4 0 3.9-3.1 6.9-7.8 6.9zm10.6-26.4c-2.2 0-3.8-.8-5.3-1.7-14.7-8.9-36-14.5-59.5-14.5-11.9 0-22.8 1.6-31.1 3.9-2 .6-3.2 1.1-4.9 1.1-4.9 0-8.7-3.9-8.7-8.8 0-4.9 2.7-7.9 6.6-9 11-3.1 23.4-5 38.4-5 25.5 0 49.8 6.3 68.1 17.5 3.2 1.9 5.4 4.5 5.4 8.9 0 4.9-3.9 8.6-9 8.6zm12.1-29.1c-2.1 0-3.4-.5-5.3-1.5-16.8-10-41.8-15.8-67.4-15.8-13.4 0-27 1.8-38.9 4.7-1.6.4-3.3 1-5.5 1-5.9 0-10.4-4.6-10.4-10.6 0-6 3.7-9.6 7.8-10.6 14.2-3.8 29.7-5.7 47.1-5.7 28.3 0 56.3 6.3 76.6 18.3 3.5 2.1 5.8 5 5.8 10.1 0 5.9-4.6 10.1-9.8 10.1z" fill="white"/></svg>`;
-const ANILIST_ICON = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6.361 2.943L0 21.056h4.942l1.077-3.133H11.4l1.077 3.133H24L17.639 2.943H6.361zm5.835 10.9H7.816l2.19-6.507 2.19 6.507z" fill="#02A9FF"/></svg>`;
-const CANVA_ICON = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm4.396 15.27c-.38.696-1.03 1.17-1.792 1.17-.47 0-.87-.13-1.21-.35l-2.854-1.95v.02c0 1.32-1.04 2.39-2.327 2.39-1.285 0-2.327-1.07-2.327-2.39V9.84c0-1.32 1.042-2.39 2.327-2.39.9 0 1.683.52 2.073 1.28l2.54 1.74.01-.01c.39-.67 1.09-1.12 1.9-1.12 1.226 0 2.22.99 2.22 2.22 0 .39-.1.76-.28 1.08l.01.01-.29.62z" fill="#7D2AE8"/></svg>`;
 const GITHUB_ICON = `<svg width="12" height="12" viewBox="0 0 24 24" fill="rgba(255,255,255,.8)"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>`;
-const INSTAGRAM_ICON = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>`;
-const GUNSLOL_ICON = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 6l9-3 9 3M3 18l9 3 9-3"/></svg>`;
 
 function buildSocials(user) {
   let html = '';
@@ -682,29 +623,9 @@ function buildSocials(user) {
       ${SPOTIFY_ICON}<span>Spotify</span>
     </a>`;
   }
-  if (user.anilist) {
-    html += `<a class="social-btn" href="${user.anilist}" target="_blank" rel="noopener noreferrer">
-      ${ANILIST_ICON}<span>AniList</span>
-    </a>`;
-  }
-  if (user.canva) {
-    html += `<a class="social-btn" href="${user.canva}" target="_blank" rel="noopener noreferrer">
-      ${CANVA_ICON}<span>Portfólio</span>
-    </a>`;
-  }
   if (user.github) {
     html += `<a class="social-btn" href="${user.github}" target="_blank" rel="noopener noreferrer">
       ${GITHUB_ICON}<span>GitHub</span>
-    </a>`;
-  }
-  if (user.instagram) {
-    html += `<a class="social-btn" href="${user.instagram}" target="_blank" rel="noopener noreferrer">
-      ${INSTAGRAM_ICON}<span>Instagram</span>
-    </a>`;
-  }
-  if (user.gunslol) {
-    html += `<a class="social-btn" href="${user.gunslol}" target="_blank" rel="noopener noreferrer">
-      ${GUNSLOL_ICON}<span>guns.lol</span>
     </a>`;
   }
   return html;
@@ -734,8 +655,13 @@ function buildCardHTML(user, data) {
   const tagDisplay = discordTag ? `<div class="un copyable" data-copy="${discordTag}" title="copiar @${discordTag}">@${discordTag}</div>` : `<div class="un" style="opacity:.4">—</div>`;
   const nmCopy = discordTag ? `class="nm copyable" data-copy="${discordTag}" title="copiar @${discordTag}"` : `class="nm"`;
 
-  const tagLabel = user.customTag ? user.customTag.label : 'Owner';
-  const tagColor = user.customTag ? user.customTag.color : 'tag-red';
+  const tagLabel = user.customTag ? user.customTag.label : null;
+  const tagColor = user.customTag ? user.customTag.color : '';
+
+  const tagHTML = tagLabel ? `
+    <a class="owner-tag-link" href="https://discord.gg/cnl" target="_blank" rel="noopener noreferrer">
+      <div class="owner-tag ${tagColor}">${tagLabel}</div>
+    </a>` : '';
 
   return `
     <div class="glare"></div>
@@ -746,9 +672,7 @@ function buildCardHTML(user, data) {
       </div>
       <div ${nmCopy}>${user.name}</div>
       ${tagDisplay}
-      <a class="owner-tag-link" href="https://discord.gg/cnl" target="_blank" rel="noopener noreferrer">
-        <div class="owner-tag ${tagColor}">${tagLabel}</div>
-      </a>
+      ${tagHTML}
       <div class="compact-status">${compactStatus}</div>
       <div class="expand">
         ${actHTML}
@@ -843,7 +767,7 @@ async function init() {
 
   USERS.forEach(u => {
     const el = document.createElement('div');
-    el.className = 'card';
+    el.className = u.center ? 'card card-center' : 'card';
     el.id = `card-${u.id}`;
     renderSkeleton(el);
     stage.appendChild(el);
