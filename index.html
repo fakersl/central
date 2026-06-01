@@ -357,9 +357,9 @@
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      gap: clamp(2px, 1vw, 6px);
+      gap: clamp(12px, 2.5vw, 20px);
       flex-wrap: wrap;
-      padding: 0 clamp(5px, 1vw, 30px);
+      padding: 0 clamp(10px, 3vw, 30px);
       perspective: 1200px;
     }
 
@@ -374,17 +374,37 @@
       cursor: pointer;
       transform-style: preserve-3d;
       will-change: transform, width, border-color, box-shadow;
-      transition: border-color 0.2s ease, box-shadow 0.25s ease, width 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1), translate 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-      translate: 0 0;
+      transition:
+        border-color 0.35s var(--ease),
+        box-shadow 0.4s var(--ease),
+        width 0.45s var(--ease-spring),
+        transform 0.4s var(--ease);
       overflow: visible;
     }
 
     .card:hover {
       width: var(--card-expanded);
       border-color: rgba(255, 255, 255, 0.2);
-      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 25px 45px -12px rgba(0, 0, 0, 0.6);
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.06),
+        0 25px 45px -12px rgba(0, 0, 0, 0.6),
+        0 0 0 2px rgba(255, 255, 255, 0.02);
       z-index: 30;
-      translate: 0 -6px;
+      transform: translateY(-6px);
+    }
+
+    .card.card-center {
+      border-color: rgba(139, 92, 246, 0.3);
+      box-shadow: 0 0 30px rgba(139, 92, 246, 0.1);
+    }
+
+    .card.card-center:hover {
+      border-color: rgba(139, 92, 246, 0.5);
+      box-shadow:
+        0 0 0 1px rgba(139, 92, 246, 0.1),
+        0 25px 45px -12px rgba(0, 0, 0, 0.6),
+        0 0 30px rgba(139, 92, 246, 0.2);
+      transform: translateY(-6px);
     }
 
     .card[data-tag-color="purple"]:hover {
@@ -395,16 +415,6 @@
     .card[data-tag-color="red"]:hover {
       box-shadow: 0 0 20px rgba(224, 48, 48, 0.4), 0 25px 45px -12px rgba(0, 0, 0, 0.6);
       border-color: rgba(224, 48, 48, 0.5);
-    }
-
-    .card.card-center {
-      border-color: rgba(139, 92, 246, 0.3);
-      box-shadow: 0 0 30px rgba(139, 92, 246, 0.1);
-    }
-
-    .card.card-center:hover {
-      border-color: rgba(139, 92, 246, 0.5);
-      box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.1), 0 25px 45px -12px rgba(0, 0, 0, 0.6), 0 0 30px rgba(139, 92, 246, 0.2);
     }
 
     .card-inner {
@@ -455,10 +465,13 @@
       height: 100%;
       border-radius: 50%;
       object-fit: cover;
+      border: 2px solid var(--bd);
       background: #111;
       transition: all 0.3s;
-      position: relative;
-      z-index: 2;
+    }
+
+    .card:hover .av {
+      border-color: rgba(255, 255, 255, 0.25);
     }
 
     .av-wrapper::before {
@@ -1128,7 +1141,7 @@
         <span class="track-name" id="track-name">Drako - Dentes</span>
         <button class="btn-play" id="pp" aria-label="play/pause">▶</button>
         <input type="range" id="seek" min="0" max="100" step="0.1" value="0" aria-label="progresso">
-        <input type="range" id="vl" min="0" max="1" step="0.01" aria-label="volume">
+        <input type="range" id="vl" min="0" max="0.2" step="0.01" aria-label="volume">
       </div>
     </div>
   </nav>
@@ -1700,7 +1713,7 @@
     let userPaused = false, fadeIv = null;
     let isSeeking = false; // impede conflito ao arrastar a barra
 
-    const savedVol = parseFloat(localStorage.getItem('site_vol') ?? '0.2');
+    const savedVol = Math.min(parseFloat(localStorage.getItem('site_vol') ?? '0.2'), 0.2);
     audio.volume = savedVol;
     vl.value = savedVol;
 
@@ -1781,8 +1794,9 @@
     });
 
     vl.addEventListener('input', e => {
-      audio.volume = parseFloat(e.target.value);
-      localStorage.setItem('site_vol', e.target.value);
+      const vol = Math.min(parseFloat(e.target.value), 0.2);
+      audio.volume = vol;
+      localStorage.setItem('site_vol', vol);
     });
 
     window.addEventListener('load', tryPlay);
